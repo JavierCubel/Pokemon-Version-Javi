@@ -1,28 +1,35 @@
 ﻿using System;
 
-namespace PikachuVsPidgey
+namespace PokemonVersionJavi
 {
     class Program
     {
-        public static Random r = new Random();
-        public static int turnoPikachu = 1;
-        public static int turnoPidgey = 2;
-        public static int turno = 1;
+        private Random r = new Random();
+        private int p = 80;
 
-        public static int vidaPikachu=100;
-        public static int vidaPidgey = 100;
+        private Pokemon pikachu;
+        private Pokemon pidgey;
 
-        public static int dañoPikachu = 30;
-        public static int dañoPidgey = 25;
+        private int turnoPikachu = 1;
+        private int turnoPidgey = 2;
+        private int turno = 1;
 
-        public static int probAtak = 80;
+        
 
-        public static double ProbCapturar()
+        public Program()
         {
-            return 99.697 - 0.697 * vidaPidgey;
+            pikachu = new Pokemon("pikachu", 100, 30, p);
+            pidgey = new Pokemon("pidgey", 100, 25, p);
         }
 
-        public static void Inicio()
+        
+
+        public double ProbCapturar()
+        {
+            return 99.697 - 0.697 * pidgey.GetVida();
+        }
+
+        public void Inicio()
         {
             Console.WriteLine("COMBATE!!!!!!!");
             Console.ReadLine();
@@ -32,7 +39,7 @@ namespace PikachuVsPidgey
             Console.ReadLine();
         }
 
-        public static void Menu()
+        public void Menu()
         {
             Console.WriteLine("Elige tu opcion");
             Console.WriteLine("1: Atacar");
@@ -40,7 +47,7 @@ namespace PikachuVsPidgey
             Console.WriteLine("3: Huir");
         }
 
-        public static int PedirOpcion()
+        public int PedirOpcion()
         {
             int opcion = 0;
             bool check = false;
@@ -56,28 +63,28 @@ namespace PikachuVsPidgey
             return opcion;
         }
 
-        public static void EscribirVida()
+        public void EscribirVida()
         {
-            Console.WriteLine("PIKACHU: {0}", vidaPikachu);
-            Console.WriteLine("PIDGEY: {0}", vidaPidgey);
+            Console.WriteLine("PIKACHU: {0}", pikachu.GetVida());
+            Console.WriteLine("PIDGEY: {0}", pidgey.GetVida());
         }
 
-        public static void TurnoPika(int opcion)
+        public void TurnoPika(int opcion)
         {
             int aleatorio = r.Next(0, 100);
             if(opcion==1)
             {
                 Console.WriteLine("Pikachu uso impactrueno");
                 Console.ReadLine();
-                if (aleatorio < probAtak)
+                if (aleatorio < pikachu.GetProbAt())
                 {
                     
-                    Console.WriteLine("Pidgey perdio {0} puntos de vida", dañoPikachu);
-                    vidaPidgey -= dañoPikachu;
-                    if (vidaPidgey <= 0)
+                    Console.WriteLine("Pidgey perdio {0} puntos de vida", pikachu.GetDaño());
+                    pidgey.Dañar(pikachu.GetDaño()); 
+                    if (pidgey.GetVida() <= 0)
                     {
                         Console.WriteLine("Pidgey se debilito");
-                        vidaPidgey = 0;
+                        pidgey.SetVida(0);
                         turno = 3;
                     }
                     else
@@ -107,20 +114,20 @@ namespace PikachuVsPidgey
                 }
             }
         }
-        public static void TurnoPidgey()
+        public void TurnoPidgey()
         {
             int aleatorio = r.Next(0,100);
             Console.WriteLine("Pidgey uso Tornado");
             Console.ReadLine();
-            if (aleatorio<probAtak)
+            if (aleatorio<pidgey.GetProbAt())
             {
                 
-                Console.WriteLine("Pikachu perdio {0} puntos de vida", dañoPidgey);
-                vidaPikachu -= dañoPidgey;
-                if(vidaPikachu<=0)
+                Console.WriteLine("Pikachu perdio {0} puntos de vida", pidgey.GetDaño());
+                pikachu.Dañar(pidgey.GetDaño());
+                if(pikachu.GetVida() <= 0)
                 {
                     Console.WriteLine("Pikachu se debilito");
-                    vidaPikachu = 0;
+                    pikachu.SetVida(0);
                     turno = 3;
                 }
                 else
@@ -135,29 +142,35 @@ namespace PikachuVsPidgey
             }
         }
 
-        public static void Main(string[] args)
+        public void Combate()
         {
             int opcion = 0;
             Inicio();
-            while(turno !=3)
+            while (turno != 3)
             {
                 EscribirVida();
-                if (turno==1)
+                if (turno == 1)
                 {
                     Menu();
                     opcion = PedirOpcion();
                 }
-                if(opcion ==3)
+                if (opcion == 3)
                 {
                     turno = 3;
                 }
-                switch(turno)
+                switch (turno)
                 {
-                    case 1: TurnoPika(opcion);  break;
-                    case 2: TurnoPidgey();  break;
+                    case 1: TurnoPika(opcion); break;
+                    case 2: TurnoPidgey(); break;
                 }
                 Console.ReadLine();
             }
+        }
+
+        public static void Main(string[] args)
+        {
+            Program p = new Program();
+            p.Combate();
         }
     }
 }
